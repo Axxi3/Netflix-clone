@@ -95,6 +95,9 @@
     </div>
   </div>
 
+
+  <Footer/>
+
 </div>
 
 
@@ -109,6 +112,7 @@ import { useRoute, useRouter } from "vue-router";
 import loader from "../assets/loader.gif";
 import Play from "../assets/play_icon.png";
 import Info from "../assets/info_icon.png";
+import Footer from "../components/Footer.vue";
 
 import {
   TVShowDetails,
