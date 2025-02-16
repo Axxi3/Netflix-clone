@@ -21,7 +21,7 @@
            {{ tvDetails?.overview }}
         </p>
       <div class="hero-btns flex flex-wrap gap-4 mb-8">
-          <button class="hover:bg-[#ffffffbf] border py-2 px-4 flex items-center text-sm sm:text-base font-semibold text-black rounded-sm bg-white cursor-pointer gap-2">
+          <button @click="playVideo" class="hover:bg-[#ffffffbf] border py-2 px-4 flex items-center text-sm sm:text-base font-semibold text-black rounded-sm bg-white cursor-pointer gap-2">
               <img class="w-6" :src="Play" alt="Play">Play
           </button>
           <button class="hover:bg-[#6d6d6e66] border py-2 px-4 flex items-center text-sm sm:text-base font-semibold text-white rounded-sm bg-[#6d6d6eb3] cursor-pointer gap-2">
@@ -66,15 +66,19 @@
 
     <div v-if="episodes.length>0" class=" mt-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <div
-        v-for="(movie, index) in episodes"
-        :key="index"
-        class="relative overflow-hidden  shadow-md transform transition duration-300 hover:scale-105"
-      >
-        <img :src="`https://image.tmdb.org/t/p/original/${movie.still_path}`" :alt="movie.name" class="w-full h-auto object-cover">
-        <h4 class="text-[18px] my-2">{{ movie.name }}</h4>
-        <p class="line-clamp-3 opacity-70">{{ movie.overview }}</p>
-       
-      </div>
+  v-for="(episode, index) in episodes"
+  :key="index"
+  @click="playEpisodeTrailer(tvDetails.id, selectedSeason, episode.episode_number)"
+  class="relative overflow-hidden shadow-md transform transition duration-300 hover:scale-105 cursor-pointer"
+>
+  <img
+    :src="`https://image.tmdb.org/t/p/original/${episode.still_path}`"
+    :alt="episode.name"
+    class="w-full h-auto object-cover"
+  />
+  <h4 class="text-[18px] my-2">{{ episode.name }}</h4>
+  <p class="line-clamp-3 opacity-70">{{ episode.overview }}</p>
+</div>
     </div>
   </div>
 </div>
@@ -122,6 +126,7 @@ import {
   Season
 } from "../Services/DataProvider";
 import {
+  getEpisodeTrailer,
   getSimilarTvShows,
   getTrailers,
   getTvEpisodesDetails,
@@ -164,6 +169,23 @@ const handleSelection = (selected: string) => {
   selectedSeason.value = selected; // Update selected season
 };
 
+
+
+const playEpisodeTrailer = async (seriesId: string, seasonNumber: string, episodeNumber: string) => {
+  try {
+    const videoKey = await getEpisodeTrailer(seriesId, seasonNumber.toString(), episodeNumber.toString());
+
+    if (videoKey) {
+      router.push(`/watch/${videoKey}`);
+    } else {
+      console.warn("No trailer found for this episode.");
+      alert("Trailer not available for this episode.");
+    }
+  } catch (error) {
+    console.error("Error playing episode trailer:", error);
+  }
+};
+
 const fetchTvData = async () => {
   try {
     if (!tvID.value) return;
@@ -194,6 +216,14 @@ const getOptions = (seasons: Season[]) => {
     seasonNames.push(season.name.toLowerCase());
   }
   return seasonNames;
+};
+
+
+const playVideo = () => {
+  if (allVideos.value.length > 0) {
+    const videoKey = allVideos.value[0].key;
+    router.push(`/watch/${videoKey}`);
+  }
 };
 
 onMounted(() => {

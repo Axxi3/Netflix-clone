@@ -20,7 +20,7 @@
            {{ movieDetails?.overview }}
         </p>
         <div class="hero-btns flex flex-wrap gap-4 mb-8">
-            <button class="hover:bg-[#ffffffbf] border py-2 px-4 flex items-center text-sm sm:text-base font-semibold text-black rounded-sm bg-white cursor-pointer gap-2">
+            <button @click="playVideo" class="hover:bg-[#ffffffbf] border py-2 px-4 flex items-center text-sm sm:text-base font-semibold text-black rounded-sm bg-white cursor-pointer gap-2">
                 <img class="w-6" :src="Play" alt="Play">Play
             </button>
             <button class="hover:bg-[#6d6d6e66] border py-2 px-4 flex items-center text-sm sm:text-base font-semibold text-white rounded-sm bg-[#6d6d6eb3] cursor-pointer gap-2">
@@ -111,6 +111,15 @@ const router=useRouter()
 const navigateToMovie = (id: number) => {
   router.push({ name: "MovieDetails", params: { id } });
 };
+
+
+const playVideo = () => {
+  if (allVideos.value.length > 0) {
+    const videoKey = allVideos.value[0].key;
+    router.push(`/watch/${videoKey}`);
+  }
+};
+
 
 
 const fetchMovieData = async () => {

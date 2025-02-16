@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../Pages/Home.vue';
 import MovieDetails from '../Pages/MovieDetails.vue';
 import TvDetails from '../Pages/TvDetails.vue';
+import VideoPlayer from '../Pages/VideoPlayer.vue';
 
 const routes = [
   {
@@ -19,6 +20,12 @@ const routes = [
     name: 'TvDetails',
     component: TvDetails,
   },
+  {
+    path: '/watch/:videoKey',
+    name: 'WatchVideo',
+    component:VideoPlayer
+  }
+  
 ];
 
 const router = createRouter({

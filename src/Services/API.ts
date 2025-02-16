@@ -128,4 +128,35 @@ export const getTvEpisodesDetails = async (
   }
 };
 
+
+
+export const getEpisodeTrailer = async (
+  seriesId: string,
+  seasonNumber: string,
+  episodeNumber: string
+): Promise<string | null> => {
+  try {
+    const data = await requests<{ results?: VideoDetails[] }>({
+      url: `/tv/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}/videos`,
+      method: "GET",
+      params: { language: "en-US" },
+    });
+
+    // Ensure results exist and have at least one entry
+    if (data?.results && data.results.length > 0) {
+      console.log(data)
+      return data.results[0].key;
+      
+    } else {
+      console.warn("No trailer found.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching episode trailer:", error);
+    return null;
+  }
+};
+
+
+
 export { requests };
