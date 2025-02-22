@@ -32,10 +32,7 @@
 </div>
 
 
-<div v-if="allVideos.length>0" class="more-cards pl-[2%] ">
-            <Traillercards title="Blockbuster Movies" :name="movieDetails?.original_title || ''" :card_data="allVideos"/>
-           
-        </div>
+
 
         <div class="px-4 sm:px-6 lg:px-8">
     <h2 class="text-2xl mb-4 font-semibold">More Details</h2>
@@ -56,12 +53,17 @@
     </div>
 </div>
 
+<div v-if="allVideos.length>0" class="more-cards pl-[2%] ">
+            <Traillercards title="Blockbuster Movies" :name="movieDetails?.original_title || ''" :card_data="allVideos"/>
+           
+        </div>
+
 
 
         <div class="px-4 sm:px-6 lg:px-8 mt-6">
     <h2 class="text-2xl mb-4 font-semibold">More Like This</h2>
 
-    <div v-if="similarMovies.length>0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <!-- <div v-if="similarMovies.length>0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <div
         v-for="(movie, index) in similarMovies"
         :key="index"
@@ -70,7 +72,31 @@
         <img @click="navigateToMovie(movie.id)" :src="`https://image.tmdb.org/t/p/original/${movie.poster_path}`" :alt="movie.backdrop_path" class="w-full h-auto object-cover">
        
       </div>
+    </div> -->
+
+      <div v-if="similarMovies.length>0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div 
+        v-for="(movie, index) in similarMovies" 
+        :key="index" 
+        @click="navigateToMovie(movie.id)"
+        @mouseover="logHover(movie.title)"
+        class="card relative hover:scale-125 hover:z-99 transition duration-500 flex-shrink-0">
+        <img 
+          class="rounded-md cursor-pointer w-full object-cover" 
+          :src="`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`" 
+          :alt="movie.title" 
+        />
+        <p class="mt-2 absolute bottom-[10px] right-[10px] text-white text-sm bg-black bg-opacity-60 px-2 py-1 rounded-md">
+          {{ movie.title }}
+        </p>
+
+     
+
+     
+      </div>
     </div>
+
+    
   </div>
 
 </div>
@@ -87,6 +113,7 @@ import Navbar from '../components/Navbar.vue';
 import Traillercards from '../components/Traillercards.vue';
 import Footer from '../components/Footer.vue';
 import { onMounted, ref } from 'vue';
+import Card from '../components/Card.vue';
 import loader from "../assets/loader.gif";
 import herobanner from "../assets/hero_banner.jpg";
 import herotitle from "../assets/hero_title.png";

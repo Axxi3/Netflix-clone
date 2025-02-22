@@ -2,12 +2,12 @@
   <div class="titlecard mt-[50px] mb-[30px]">
     <!-- Dynamic title from props -->
     <h2 class="mb-[8px] text-xl font-bold text-white">{{ title }}</h2>
-    <div class="card-list flex gap-4 overflow-x-auto pb-2" ref="cardRef">
+    <div class="card-list flex gap-4  pb-2" ref="cardRef">
       <div 
         v-for="(movie, index) in card_data" 
         :key="index" 
         @click="navigateToMovie(movie.id)"
-        class="card relative flex-shrink-0">
+        class="card relative hover:scale-125 hover:z-99 transition duration-500  flex-shrink-0">
         <img 
           class="rounded-md cursor-pointer w-[280px] h-[160px] object-cover" 
           :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" 
