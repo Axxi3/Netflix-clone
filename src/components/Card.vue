@@ -1,56 +1,148 @@
-<template>
-  <div class="titlecard mt-[50px] mb-[30px] ">
-    <!-- Dynamic title from props -->
-    <h2 class="mb-[8px] text-xl font-bold text-white">{{ title }}</h2>
-    <div class="card-list flex gap-4  pb-2" ref="cardRef">
+<template >
+  <h2 class="mb-[8px] text-xl font-bold text-white">{{ title }}</h2>
+  <div class="relative flex items-center w-full overflow-x-hidden  overflow-y-visible">
+    <!-- Left Arrow -->
+    <div class="h-full ">
+      <button 
+        @click="scrollLeft" 
+        class="absolute left-0 z-2000 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-75 transition hidden sm:flex"
+      >
+        <ChevronLeftIcon class="h-6 w-6" />
+      </button>
+    </div>
+
+    <div 
+      ref="cardRef"
+      class="relative flex gap-4 overflow-x-auto  overflow-y-visible scroll-smooth no-scrollbar w-full md:px-8"
+    >
       <div 
         v-for="(movie, index) in card_data" 
         :key="index" 
-        @click="navigateToMovie(movie.id)"
-        @mouseover="logHover(movie.title)"
-        class="card relative hover:scale-125 hover:z-99 transition duration-500 flex-shrink-0">
-        <img 
-          class="rounded-md cursor-pointer w-[280px] h-[160px] object-cover" 
-          :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" 
-          :alt="movie.title" 
-        />
-        <p class="mt-2 absolute bottom-[10px] right-[10px] text-white text-sm bg-black bg-opacity-60 px-2 py-1 rounded-md">
-          {{ movie.title }}
-        </p>
+        class="relative flex-shrink-0 cursor-pointer  overflow-y-visible group transition-all duration-300 
+               hover:z-50 hover:scale-110 
+               w-[180px] sm:w-[220px] md:w-[280px]"
+      >
+        <div 
+          @click="navigateToMovie(movie.id)"
+          class="relative rounded-md transition-all  duration-300 overflow-hidden"
+        >
+          <!-- Movie Thumbnail -->
+          <div class="relative w-full aspect-[16/9]">
+            <img 
+              class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 rounded-md" 
+              :src="`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`" 
+              :alt="movie.title" 
+            />
+          </div>
 
-     
+          <!-- Hover Overlay -->
+          <div 
+  class="opacity-0 group-hover:opacity-100 absolute inset-0 w-full bg-black bg-opacity-75 
+         transition-opacity duration-300 flex flex-col justify-end p-4 sm:p-5 
+         pointer-events-auto z-50 overflow-hidden"
+>
+            <!-- Background Blur -->
+            <div 
+    class="absolute inset-0 bg-cover bg-center opacity-30 blur-lg" 
+    :style="{ backgroundImage: `url('https://image.tmdb.org/t/p/w500${movie.backdrop_path}')` }"
+  ></div>
 
-     
+            <!-- Control Buttons -->
+            <div class="relative z-10 flex justify-between items-center mb-3 pointer-events-auto">
+              <div class="flex space-x-2 sm:space-x-3">
+                <button 
+                  @click.stop="playMovie(movie)"
+                  class="bg-white text-black p-2 sm:p-2.5 rounded-full hover:bg-gray-200 transition"
+                >
+                  <PlayIcon class="h-5 w-5"/>
+                </button>
+                <button 
+                  @click.stop="addToList(movie)"
+                  class="border border-white text-white p-2 sm:p-2.5 rounded-full hover:bg-white hover:bg-opacity-20 transition"
+                >
+                  <PlusIcon class="h-5 w-5"/>
+                </button>
+              </div>
+              <button 
+                @click.stop="showMoreInfo(movie)"
+                class="border border-white text-white p-2 sm:p-2.5 rounded-full hover:bg-white hover:bg-opacity-20 transition"
+              >
+                <InformationIcon class="h-5 w-5"/>
+              </button>
+            </div>
+
+            <!-- Title & Metadata -->
+            <div class="relative z-10 text-white pointer-events-auto">
+              <h3 class="text-sm sm:text-base font-bold mb-1 leading-tight">{{ movie.title }}</h3>
+              <div class="flex items-center space-x-2 text-xs sm:text-sm">
+                <span class="text-green-500 font-semibold">98% Match</span>
+                <span class="border border-gray-500 px-1 rounded">HD</span>
+                <span>{{ movie.release_date?.split('-')[0] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Right Arrow -->
+     <div class="h-full">
+    <button 
+      @click="scrollRight" 
+      class="absolute right-0 z-2000 p-2 bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-75 transition hidden sm:flex"
+    >
+      <ChevronRightIcon class="h-6 w-6" />
+    </button>
+  </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineProps } from "vue";
-import type { Movie } from "../Services/DataProvider"; // Importing the Movie interface
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import Play from "../assets/play_icon.png";
-// Props with strict typing
+import ChevronLeftIcon from "vue-material-design-icons/ChevronLeft.vue";
+import ChevronRightIcon from "vue-material-design-icons/ChevronRight.vue";
+import PlayIcon from "vue-material-design-icons/Play.vue";
+import PlusIcon from "vue-material-design-icons/Plus.vue";
+import InformationIcon from "vue-material-design-icons/Information.vue";
+
 const props = defineProps<{
   title: string;
-  card_data: Movie[];
+  card_data: { id: number; title: string; backdrop_path: string; release_date?: string }[];
 }>();
 
-const router=useRouter()
-
+const router = useRouter();
 const cardRef = ref<HTMLElement | null>(null);
 
-function logHover(title: string) {
-  console.log(`Card hovered: ${title}`);
-}
-
 const navigateToMovie = (id: number) => {
-  router.push({ name: "MovieDetails", params: { id } });
+  router.push({ 
+    path: `movie/${id}`,  // Use path instead of name to ensure child route
+    query: { modal: 'true' }  // Optional: add a query parameter
+  });
 };
 
+const playMovie = (movie: any) => {
+  console.log('Play movie:', movie.title);
+};
 
-// Enable horizontal scrolling with mouse wheel
+const addToList = (movie: any) => {
+  console.log('Add to list:', movie.title);
+};
+
+const showMoreInfo = (movie: any) => {
+  navigateToMovie(movie.id);
+};
+
+// Scrolling Functionality
+const scrollLeft = () => {
+  if (cardRef.value) cardRef.value.scrollBy({ left: -300, behavior: "smooth" });
+};
+
+const scrollRight = () => {
+  if (cardRef.value) cardRef.value.scrollBy({ left: 300, behavior: "smooth" });
+};
+
+// Enable smooth horizontal scrolling with the mouse wheel
 onMounted(() => {
   if (cardRef.value) {
     cardRef.value.addEventListener("wheel", (event) => {
@@ -62,7 +154,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.card-list::-webkit-scrollbar {
-  display: none; /* Hide scrollbar */
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;
 }
 </style>

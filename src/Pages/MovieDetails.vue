@@ -1,144 +1,130 @@
 <template>
-
-<div v-if="loading" class="loader-container w-full h-screen flex items-center justify-center">
-            <img :src="loader" alt="Loading..." class="loader" />
+  <div 
+    class="fixed inset-0 z-[100] pointer-events-auto  overflow-y-auto"
+    @click.self="closePopup"
+  >
+    <div class="relative w-full max-w-[1000px] mx-auto bg-[#181818] rounded-lg shadow-2xl overflow-hidden">
+      <!-- Video Hero Section -->
+      <div class="relative pt-[56.25%]">
+        <div class="absolute inset-0">
+          <img 
+            :src="`https://image.tmdb.org/t/p/original${movieDetails?.backdrop_path}`" 
+            class="w-full h-full object-cover opacity-50"
+          >
+          <div class="absolute inset-0 bg-gradient-to-t from-[#181818] via-transparent to-transparent"></div>
         </div>
 
-
-<div v-else class="w-full">
-      <div class="hero relative md:h-[90vh] h-[75vh]">
-    <img :src="`https://image.tmdb.org/t/p/original${movieDetails?.backdrop_path}`" class="banner-img w-full h-full object-cover"> 
-    <div class="her-caption absolute w-full pl-4 sm:pl-6 lg:pl-8 lg:bottom-[8%] md:bottom-8 bottom-0">
-        <div>
-                        
-                        <h1
-                            class="text-xl sm:text-2xl mt-3 md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4">
-                            {{ movieDetails?.title }}
-                        </h1>
-                    </div>
-        <p class="text-sm sm:text-base lg:text-lg max-w-[90%] sm:max-w-[700px] mb-4">
-           {{ movieDetails?.overview }}
-        </p>
-        <div class="hero-btns flex flex-wrap gap-4 mb-8">
-            <button @click="playVideo" class="hover:bg-[#ffffffbf] border py-2 px-4 flex items-center text-sm sm:text-base font-semibold text-black rounded-sm bg-white cursor-pointer gap-2">
-                <img class="w-6" :src="Play" alt="Play">Play
-            </button>
-            <button class="hover:bg-[#6d6d6e66] border py-2 px-4 flex items-center text-sm sm:text-base font-semibold text-white rounded-sm bg-[#6d6d6eb3] cursor-pointer gap-2">
-                <img class="w-6" :src="Info" alt="More Info">More Info
-            </button>
-        </div>
-
-    </div>
-</div>
-
-
-
-
-        <div class="px-4 sm:px-6 lg:px-8">
-    <h2 class="text-2xl mb-4 font-semibold">More Details</h2>
-
-    <div class="mt-7 flex flex-col md:flex-row gap-6">
-        <div class="flex flex-col gap-1 md:w-1/3">
-            <h3 class="opacity-60 text-lg">Watch Offline</h3>
-            <p class="text-base">Download and watch everywhere you go.</p>
-        </div>
-        <div class="flex flex-col gap-1 md:w-1/3">
-            <h3 class="opacity-60 text-lg">Genre</h3>
-            <p class="text-base">Romantic TV Dramas, TV Dramas, TV Shows Based on Books, Teen TV Shows, TV Comedies, Romantic TV Comedies, Hindi-Language TV Shows</p>
-        </div>
-        <div class="flex flex-col gap-1 md:w-1/3">
-            <h3 class="opacity-60 text-lg">Quote of the movie is...</h3>
-            <p class="text-base">{{ movieDetails?.tagline }}</p>
-        </div>
-    </div>
-</div>
-
-<div v-if="allVideos.length>0" class="more-cards pl-[2%] ">
-            <Traillercards title="Blockbuster Movies" :name="movieDetails?.original_title || ''" :card_data="allVideos"/>
-           
-        </div>
-
-
-
-        <div class="px-4 sm:px-6 lg:px-8 mt-6">
-    <h2 class="text-2xl mb-4 font-semibold">More Like This</h2>
-
-    <!-- <div v-if="similarMovies.length>0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      <div
-        v-for="(movie, index) in similarMovies"
-        :key="index"
-        class="relative overflow-hidden  shadow-md transform transition duration-300 hover:scale-105"
-      >
-        <img @click="navigateToMovie(movie.id)" :src="`https://image.tmdb.org/t/p/original/${movie.poster_path}`" :alt="movie.backdrop_path" class="w-full h-auto object-cover">
-       
+        <!-- Close Button -->
+        <button 
+          @click="closePopup" 
+          class="absolute top-4 right-4 z-50 text-white hover:text-gray-300 transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 md:h-10 md:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
-    </div> -->
 
-      <div v-if="similarMovies.length>0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        <div 
-        v-for="(movie, index) in similarMovies" 
-        :key="index" 
-        @click="navigateToMovie(movie.id)"
-        @mouseover="logHover(movie.title)"
-        class="card relative hover:scale-125 hover:z-99 transition duration-500 flex-shrink-0">
-        <img 
-          class="rounded-md cursor-pointer w-full object-cover" 
-          :src="`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`" 
-          :alt="movie.title" 
-        />
-        <p class="mt-2 absolute bottom-[10px] right-[10px] text-white text-sm bg-black bg-opacity-60 px-2 py-1 rounded-md">
-          {{ movie.title }}
-        </p>
+      <!-- Poster and Details Container -->
+      <div class="px-4 md:px-12 py-4 md:py-8 bg-[#181818]">
+        <div class="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
+          <img 
+            :src="`https://image.tmdb.org/t/p/w500${movieDetails?.poster_path}`" 
+            :alt="movieDetails?.title" 
+            class="w-32 h-48 md:w-48 md:h-72 object-cover rounded-md shadow-lg"
+          />
+          
+          <div class="w-full text-white text-center md:text-left">
+            <h1 class="text-2xl md:text-4xl lg:text-5xl font-bold mb-2 md:mb-4">{{ movieDetails?.title }}</h1>
+            
+            <div class="flex justify-center md:justify-start items-center space-x-2 md:space-x-3 mb-2 md:mb-4 flex-wrap">
+              <span class="text-green-500 font-bold text-sm md:text-base">{{ getMatchPercentage() }}% Match</span>
+              <span class="text-xs md:text-sm border border-gray-500 px-1">HD</span>
+              <span class="text-sm">{{ movieDetails?.release_date?.split('-')[0] }}</span>
+              <span class="text-sm border border-gray-500 px-1">{{ movieDetails?.runtime }} min</span>
+            </div>
+            
+            <div class="flex justify-center md:justify-start items-center space-x-2 md:space-x-4 mb-4">
+              <button 
+                @click="playVideo"
+                class="bg-white text-black px-4 py-1 md:px-6 md:py-2 rounded flex items-center space-x-2 hover:bg-gray-200"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-6 md:w-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-sm md:text-base">Play</span>
+              </button>
+              <button class="bg-gray-600 bg-opacity-50 text-white px-4 py-1 md:px-6 md:py-2 rounded flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-sm md:text-base">My List</span>
+              </button>
+            </div>
+            
+            <p class="text-base md:text-lg mb-4">{{ movieDetails?.overview }}</p>
+          </div>
+        </div>
 
-     
+        <div class="mt-4">
+          <div class="mb-2">
+            <span class="text-gray-500 text-sm md:text-base">Genres: </span>
+            <span class="text-white text-sm md:text-base">
+              {{ movieDetails?.genres?.map(genre => genre.name).join(', ') }}
+            </span>
+          </div>
+          <div>
+            <span class="text-gray-500 text-sm md:text-base">Available Languages: </span>
+            <span class="text-white text-sm md:text-base">English, Spanish, French</span>
+          </div>
+        </div>
+      </div>
 
-     
+      <!-- More Like This -->
+      <div class="px-4 md:px-12 py-4 md:py-8 bg-[#141414]">
+        <h2 class="text-xl md:text-2xl text-white mb-4 md:mb-6">More Like This</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
+          <div 
+            v-for="(movie, index) in similarMovies" 
+            :key="index" 
+            @click="navigateToMovie(movie.id)"
+            class="relative group cursor-pointer"
+          >
+            <div class="relative pb-[150%] md:pb-[56.25%] overflow-hidden rounded-md">
+              <img 
+                :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" 
+                :alt="movie.title"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </div>
+            <div class="mt-1 md:mt-2 text-gray-400 text-xs md:text-sm text-center md:text-left">
+              {{ movie.title }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-    
   </div>
-
-</div>
-
-
-
-
-        <Footer/>
-
 </template>
 
 <script setup lang="ts">
-import Navbar from '../components/Navbar.vue';
-import Traillercards from '../components/Traillercards.vue';
-import Footer from '../components/Footer.vue';
-import { onMounted, ref } from 'vue';
-import Card from '../components/Card.vue';
-import loader from "../assets/loader.gif";
-import herobanner from "../assets/hero_banner.jpg";
-import herotitle from "../assets/hero_title.png";
-import Play from "../assets/play_icon.png";
-import Info from "../assets/info_icon.png";
-import cards_data from '../assets/cards/Cards_data';
+import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Movie, MovieDetails, VideoDetails } from '../Services/DataProvider';
 import { getMovieDetails, getSimilarMovies, getTrailers } from '../Services/API';
-import { all } from 'axios';
 
 const route = useRoute();
+const router = useRouter();
+
 const movieID = ref<string>(route.params.id as string);
 const movieDetails = ref<MovieDetails | null>(null);
 const allVideos = ref<VideoDetails[]>([]);
 const similarMovies = ref<Movie[]>([]);
-const loading = ref<boolean>(false);
-
-
-const router=useRouter()
+const loading = ref<boolean>(true);
 
 const navigateToMovie = (id: number) => {
   router.push({ name: "MovieDetails", params: { id } });
 };
-
 
 const playVideo = () => {
   if (allVideos.value.length > 0) {
@@ -147,28 +133,31 @@ const playVideo = () => {
   }
 };
 
+const closePopup = () => {
+  router.go(-1);
+};
 
+const getMatchPercentage = () => {
+  // Generate a pseudo-random match percentage
+  const basePercentage = movieDetails.value ? 
+    (parseInt(movieDetails.value.id.toString()) % 50) + 50 : 
+    70;
+  return basePercentage;
+};
 
 const fetchMovieData = async () => {
   try {
     if (!movieID.value) return;
-    loading.value = true;
     
-    // Fetch all data in parallel
     const [details, videos, similar] = await Promise.all([
       getMovieDetails(Number(movieID.value)),
       getTrailers(movieID.value, 'movie'),
       getSimilarMovies(movieID.value)
     ]);
 
-    // Assign fetched data to state variables
     movieDetails.value = details;
     allVideos.value = videos;
     similarMovies.value = similar;
-    
-    console.log({ details, videos, similar });
-
-    console.log(`https://image.tmdb.org/t/p/original${movieDetails.value.backdrop_path}`)
   } catch (error) {
     console.error("Error fetching movie data:", error);
   } finally {
@@ -179,20 +168,17 @@ const fetchMovieData = async () => {
 onMounted(() => {
   fetchMovieData();
 });
-
-
-
-// Fetch movie details when the component mounts
-
 </script>
 
+<style scoped>
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 
-<style lang="scss" scoped>
-.banner-img {
-    mask-image: linear-gradient(to right, transparent, black 75%),
-    linear-gradient(to top from bottom, transparent, black 75%);
-               
-    -webkit-mask-image: linear-gradient(to right, transparent, black 75%), 
-                        
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 </style>

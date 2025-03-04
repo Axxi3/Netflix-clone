@@ -1,52 +1,69 @@
 <template>
-    <div class="home">
-        <Navbar />
-
-        <!-- Loader -->
-        <div v-if="loading" class="loader-container w-full h-screen flex items-center justify-center">
-            <img :src="loader" alt="Loading..." class="loader" />
-        </div>
-
-        <!-- Main Content -->
-        <div v-else>
-            <div v-if="upcomingMovies.length > 0" class="hero relative md:h-[100vh] h-[70vh]">
-                <img :src="`https://image.tmdb.org/t/p/original/${upcomingMovies[0].backdrop_path}`"
-                    class="banner-img w-full h-full object-cover">
-                <div class="her-caption absolute w-full pl-4 sm:pl-6 lg:pl-8 lg:top-[30%] md:bottom-8 bottom-0">
-                    <div>
-                        <img :src="logo" alt="" class="w-[100px]">
-                        <h1
-                            class="text-xl sm:text-2xl mt-3 md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4">
-                            {{ upcomingMovies[0].title }}
-                        </h1>
-                    </div>
-
-                    <p class="text-sm sm:text-base lg:text-lg max-w-[90%] sm:max-w-[700px] mb-4 line-clamp-4">
-                        {{ upcomingMovies[0].overview }}
-                    </p>
-                    <div class="hero-btns flex flex-wrap gap-4 mb-8">
-                       
-                        <button
-                            class="hover:bg-[#6d6d6e66] border py-2 px-4 flex items-center text-sm sm:text-base font-semibold text-white rounded-sm bg-[#6d6d6eb3] cursor-pointer gap-2">
-                            <img class="w-6" :src="Info" alt="More Info">More Info
-                        </button>
-                    </div>
-
-                    <Card title="Popular on Netflix" :card_data="upcomingMovies" class="lg:flex hidden lg:flex-col" />
-                </div>
+    <div class="home relative">
+      <Navbar />
+  
+      <!-- Loader -->
+      <div v-if="loading" class="loader-container w-full h-screen flex items-center justify-center">
+        <img :src="loader" alt="Loading..." class="loader" />
+      </div>
+  
+      <!-- Main Content -->
+      <div v-else>
+        <div v-if="upcomingMovies.length > 0" class="hero relative md:h-[100vh] h-[70vh]">
+          <img :src="`https://image.tmdb.org/t/p/original/${upcomingMovies[0].backdrop_path}`"
+            class="banner-img w-full h-full object-cover">
+          <div class="her-caption absolute w-full pl-4 sm:pl-6 lg:pl-8 lg:top-[30%] md:bottom-8 bottom-0">
+            <div>
+              <img :src="logo" alt="" class="w-[100px]">
+              <h1
+                class="text-xl sm:text-2xl mt-3 md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4">
+                {{ upcomingMovies[0].title }}
+              </h1>
             </div>
-
-            <div class="more-cards mt-[40px] pl-[2%]">
-                <Card title="Blockbuster Movies" :card_data="popularMovies" />
-                <TvCard title="Top rated Shows" :card_data="TopratedTvs" />
-                <Card title="Upcoming" :card_data="upcomingMovies" />
-                <TvCard title="Don't miss this tonight" :card_data="airingToday" />
+  
+            <p class="text-sm sm:text-base lg:text-lg max-w-[90%] sm:max-w-[700px] mb-4 line-clamp-4">
+              {{ upcomingMovies[0].overview }}
+            </p>
+            <div class="hero-btns flex flex-wrap gap-4 mb-8">
+              <button
+                class="hover:bg-[#6d6d6e66] border py-2 px-4 flex items-center text-sm sm:text-base font-semibold text-white rounded-sm bg-[#6d6d6eb3] cursor-pointer gap-2">
+                <img class="w-6" :src="Info" alt="More Info">More Info
+              </button>
             </div>
+  
+        
+          </div>
         </div>
-
-        <Footer />
+  
+        <div class="more-cards md:-mt-[150px] pl-[2%]">
+          <Card title="Blockbuster Movies" :card_data="popularMovies" />
+          <TvCard title="Top rated Shows" :card_data="TopratedTvs" />
+          <Card title="Upcoming" :card_data="upcomingMovies" />
+          <TvCard title="Don't miss this tonight" :card_data="airingToday" />
+        </div>
+      </div>
+  
+      <!-- Modal Router View -->
+      <router-view v-slot="{ Component }">
+      <template v-if="Component">
+        <div 
+          v-if="$route.meta.isModal" 
+          class="fixed inset-0 z-50 pointer-events-auto"
+        >
+          <div 
+            class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+            @click="closeModal"
+          ></div>
+          <div class="fixed inset-0 flex items-center justify-center z-60 pointer-events-auto">
+            <component :is="Component" class="relative z-70" />
+          </div>
+        </div>
+      </template>
+    </router-view>
+  
+      <Footer />
     </div>
-</template>
+  </template>
 
 
 <script setup lang="ts">
