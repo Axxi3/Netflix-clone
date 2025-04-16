@@ -14,29 +14,28 @@ const routes = [
         path: 'movie/:id',
         name: 'MovieDetails',
         component: MovieDetails,
-        meta: { 
-          isModal: true 
-        }
+        meta: { isModal: true }
+      },
+      {
+        path: '/tv/:id',
+        name: 'Tvdetails',
+        component: TvDetails,
+        meta: { modal: true },
       }
     ]
-    },
-  {
-    path: '/movie/:id',
-    name: 'MovieDetails',
-    component: MovieDetails,
   },
-  {
-    path: '/tv/:id',
-    name: 'TvDetails',
-    component: TvDetails,
-  },
+  // {
+  //   path: '/tv/:id',
+  //   name: 'TvDetails',
+  //   component: TvDetails,
+  // },
   {
     path: '/watch/:videoKey',
     name: 'WatchVideo',
-    component:VideoPlayer
+    component: VideoPlayer
   }
-  
 ];
+
 
 const router = createRouter({
   history: createWebHistory(), // ✅ Corrected
