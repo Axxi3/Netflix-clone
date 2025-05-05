@@ -1,11 +1,9 @@
 <template>
   <!-- Loading screen -->
-  <div v-if="loading" class="w-full h-screen flex items-center justify-center bg-black">
-    <img :src="loader" alt="Loading..." class="w-16 h-16" />
-  </div>
+ 
 
   <!-- Modal Popup -->
-  <div v-else class="fixed inset-0 bg-black/80 flex items-center justify-center z-50  overflow-y-auto">
+  <div  class="fixed inset-0 bg-black/80 flex items-center justify-center z-50  overflow-y-auto">
     <!-- Close button -->
     <button @click="closeModal" class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300 z-10">
       ×
@@ -112,27 +110,28 @@
         </div>
 
         <!-- More Like This Section -->
-        <div class="mt-8">
-          <h2 class="text-2xl mb-4 font-semibold">More Like This</h2>
-
-          <div v-if="similarTvShows.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div 
-              v-for="(movie, index) in similarTvShows" 
-              :key="index" 
-              @click="navigateToMovie(movie.id)"
-              class="card relative hover:scale-110 hover:z-10 transition duration-300 flex-shrink-0"
-            >
-              <img 
-                class="rounded-md cursor-pointer w-full object-cover" 
-                :src="`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`" 
-                :alt="movie.name" 
+        <div class="px-4 md:px-12 py-4 md:py-8 bg-[#141414]">
+        <h2 class="text-xl md:text-2xl text-white mb-4 md:mb-6">More Like This</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
+          <div
+            v-for="(movie, index) in similarTvShows"
+            :key="index"
+            @click="navigateToMovie(movie.id)"
+            class="relative group cursor-pointer"
+          >
+            <div class="relative pb-[150%] md:pb-[56.25%] overflow-hidden rounded-md">
+              <img
+                :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
+                :alt="movie.name"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
               />
-              <p class="mt-2 absolute bottom-2 right-2 text-white text-sm bg-black bg-opacity-60 px-2 py-1 rounded-md">
-                {{ movie.name }}
-              </p>
+            </div>
+            <div class="mt-1 md:mt-2 text-gray-400 text-xs md:text-sm text-center md:text-left">
+              {{ movie.name }}
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>

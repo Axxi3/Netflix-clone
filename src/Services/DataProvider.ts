@@ -183,6 +183,21 @@ export interface Episode {
 }
 
 
+export interface SearchResult {
+  id: number;
+  media_type: 'movie' | 'tv' | 'person';
+  title?: string;         // For movies
+  name?: string;          // For TV shows or persons
+  poster_path?: string;
+  backdrop_path?: string;
+  overview?: string;
+  release_date?: string;   // For movies
+  first_air_date?: string; // For TV shows
+  popularity?: number;
+}
+
+
+
 
 
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-black text-white min-h-screen">
+  <div class="bg-black text-white min-h-screen container overflow-x-hidden">
     <Navbar />
 
     <!-- Loader -->
@@ -55,26 +55,26 @@
       </div>
 
       <!-- Content Rows -->
-      <div class="relative -mt-12 z-20">
-        <Card title="Blockbuster Movies" :card_data="popularMovies" />
-        <TvCard title="Top Rated Shows" :card_data="TopratedTvs" />
-        <Card title="New Releases" :card_data="upcomingMovies" />
-        <TvCard title="Trending Tonight" :card_data="airingToday" />
-        <Card v-if="popularMovies.length > 0" title="Watch Again" :card_data="popularMovies.slice().reverse()" />
+      <div class="relative mt-2 z-20">
+        <div class="space-y-8 overflow-visible px-4 sm:px-8 lg:px-16">
+          <Card title="Blockbuster Movies"  :card_data="popularMovies" />
+          <TvCard title="Top Rated Shows" :card_data="TopratedTvs" />
+          <Card title="New Releases" :card_data="upcomingMovies" />
+          <TvCard title="Trending Tonight" :card_data="airingToday" />
+          <Card v-if="popularMovies.length > 0" title="Watch Again" :card_data="popularMovies.slice().reverse()" />
+        </div>
       </div>
     </div>
 
     <router-view v-slot="{ Component }">
-  <transition name="fade">
-    <component
-      :is="Component"
-      v-if="$route.query.modal === 'true'"
-      class="fixed inset-0 z-50"
-    />
-  </transition>
-</router-view>
-
-
+      <transition name="fade">
+        <component
+          :is="Component"
+          v-if="$route.query.modal === 'true'"
+          class="fixed inset-0 z-50"
+        />
+      </transition>
+    </router-view>
 
     <Footer />
   </div>
@@ -156,7 +156,6 @@ const goToMovieDetails = (id: number) => {
     router.push({ name: 'MovieDetails', params: { id }, query: { modal: 'true' } });
   }
 };
-
 
 onMounted(fetchAllMoviesAndShows);
 </script>
