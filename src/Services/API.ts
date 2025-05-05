@@ -158,5 +158,22 @@ export const getEpisodeTrailer = async (
 };
 
 
+export const searchMulti = async (query: string): Promise<(Movie | TvShows)[]> => {
+  const data = await requests<{ results: (Movie | TvShows)[] }>({
+    url: '/search/multi',
+    method: 'GET',
+    params: {
+      query,
+      language: 'en-US',
+      include_adult: false,
+      page: 1,
+    },
+  });
+
+  return data?.results || [];
+};
+
+
+
 
 export { requests };

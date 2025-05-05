@@ -3,6 +3,7 @@ import Home from '../Pages/Home.vue';
 import MovieDetails from '../Pages/MovieDetails.vue';
 import TvDetails from '../Pages/TvDetails.vue';
 import VideoPlayer from '../Pages/VideoPlayer.vue';
+import Search from '../Pages/Search.vue';
 
 const routes = [
   {
@@ -33,6 +34,11 @@ const routes = [
     path: '/watch/:videoKey',
     name: 'WatchVideo',
     component: VideoPlayer
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => Search,
   }
 ];
 
